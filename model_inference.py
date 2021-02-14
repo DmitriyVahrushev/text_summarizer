@@ -28,11 +28,6 @@ def predict(text):
 	for word in word_frequencies.keys():
 		word_frequencies[word] = (word_frequencies[word]/maximum_frequncy)
 
-	maximum_frequncy = max(word_frequencies.values())
-
-	for word in word_frequencies.keys():
-		word_frequencies[word] = (word_frequencies[word]/maximum_frequncy)
-
 	sentence_scores = {}
 
 	for sent in sentence_list:
