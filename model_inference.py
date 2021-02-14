@@ -1,4 +1,4 @@
 
 
 def predict(text):
-	return text
+	return "<strong>" + text + "</strong>"
