@@ -1,7 +1,4 @@
 Flask==1.0.3
 numpy
 gunicorn==19.9.0
-spacy==2.1.3
-torch
-neuralcoref
-bert-extractive-summarizer
+nltk
