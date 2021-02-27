@@ -31,7 +31,8 @@ def api_get_text():
 		return jsonify({'output_text':'No text in input_text key'})
 	input_text = recieved_json['input_text']
 	output_text = predict(input_text)
-	return render_template('index.html', output_text = output_text) # вернуть словарь с заполненным текстом
+	recieved_json['output_text'] = output_text
+	return jsonify(recieved_json)
 
 
 if __name__ == '__main__':
