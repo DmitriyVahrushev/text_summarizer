@@ -2,3 +2,4 @@ Flask==1.0.3
 numpy
 gunicorn==19.9.0
 nltk
+gensim
