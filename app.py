@@ -1,7 +1,8 @@
 import os
 
 from flask import Flask, render_template, request, redirect, flash, jsonify
-from model_inference import predict
+from algorithm_lda import predict
+
 
 app = Flask(__name__)
 
