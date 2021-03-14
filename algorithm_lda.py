@@ -4,6 +4,7 @@ import gensim
 import heapq
 import numpy as np
 
+
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('wordnet')
@@ -26,7 +27,29 @@ def get_wordnet_pos(treebank_tag):
         return ''
 
 
-def comprute_lda(sentence_list, tokens):
+def find_best_num_topic(dictionary, corpus, texts, limit=20, start=2, step=2):
+    """
+	Выбор оптимального количества тем с наибольшем скором когерентности
+	dictionary : Gensim словарь
+	corpus : Gensim корпус
+	texts : Список текста
+	limit : Максимальное количество тем
+    """
+
+    best_coherence_values = 0
+    best_num_topic = 2
+
+    for num_topics in range(start, limit, step):
+        model = gensim.models.LdaModel(corpus=corpus, id2word=dictionary, num_topics=num_topics)
+        coherencemodel = gensim.models.CoherenceModel(model=model, texts=texts, dictionary=dictionary, coherence='c_v')
+        coherence_score = coherencemodel.get_coherence()
+        if coherence_score > best_coherence_values:
+            best_coherence_values = coherence_score
+            best_num_topic = num_topics
+    return best_num_topic
+
+
+def compute_lda(sentence_list, tokens):
     bigram_model = gensim.models.Phrases(tokens)
     trigram_model = gensim.models.Phrases(bigram_model[tokens], min_count=1)
     tokens = list(trigram_model[bigram_model[tokens]])
@@ -37,16 +60,13 @@ def comprute_lda(sentence_list, tokens):
     corpus = [dictionary_LDA.doc2bow(token) for token in tokens]
 
     np.random.seed(123456)
-    # TODO: maybe could change num_topics if it increase model`s
-    num_topics = 10
+    num_topics = find_best_num_topic(dictionary_LDA,corpus,tokens)
     lda_model = gensim.models.LdaModel(
         corpus, num_topics=num_topics,
         id2word=dictionary_LDA,
         passes=10, alpha=[0.01] * num_topics,
         eta=[0.01] * len(dictionary_LDA.keys())
     )
-
-    # TODO: need finish lda algorithm
 
     topn = int(len(tokens) * 0.5)
     sentence_score = {}
@@ -63,7 +83,7 @@ def comprute_lda(sentence_list, tokens):
     return sentence_score
 
 
-def predict(text):
+def predict(text,result_sent_perc = 10):
     article_text = re.sub(r'\[[0-9]*\]', ' ', text)
     article_text = re.sub(r'\s+', ' ', article_text)
     # TODO: rename variables
@@ -86,8 +106,9 @@ def predict(text):
         ]
         for token_sentence in tokens_sentences_lemmatized
     ]
-    sentence_score = comprute_lda(sentence_list, tokens_sentences_lemmatized)
-    summary_sentences = heapq.nlargest(7, sentence_score, key=sentence_score.get)
+    sentence_score = compute_lda(sentence_list, tokens_sentences_lemmatized)
+    summary_sentences = heapq.nlargest(round(len(sentence_list) * result_sent_perc / 100
+                                             ), sentence_score, key=sentence_score.get)
 
     res = ' '
     for sent in sentence_list:
