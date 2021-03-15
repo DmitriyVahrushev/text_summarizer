@@ -17,7 +17,6 @@ def upload_text():
 		if not input_text:
 			return render_template('index.html', output_text = "Не было введено текста!")
 		output_text = predict_lda(input_text)
-		print(output_text)
 		return render_template('index.html', output_text = output_text)
 	return render_template('index.html')
 
