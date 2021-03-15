@@ -66,7 +66,7 @@ def compute_tf_idf(article_text, idf_flag=True):
 
 def predict_tfidf(text, result_sent_perc = 10):
 	article_text = re.sub(r'\[[0-9]*\]', ' ', text)
-	article_text = re.sub(r'\s+', ' ', article_text)
+	article_text = article_text.replace('\r\n', ' <br> ')
 
 	# formatted_article_text = re.sub('[^a-zA-Z]', ' ', article_text )
 	# formatted_article_text = re.sub(r'\s+', ' ', formatted_article_text)
@@ -89,13 +89,12 @@ def predict_tfidf(text, result_sent_perc = 10):
 
 def predict_tf(text, result_sent_perc = 10):
 	article_text = re.sub(r'\[[0-9]*\]', ' ', text)
-	article_text = re.sub(r'\s+', ' ', article_text)
+	article_text = article_text.replace('\r\n', ' <br> ')
 
 	# formatted_article_text = re.sub('[^a-zA-Z]', ' ', article_text )
 	# formatted_article_text = re.sub(r'\s+', ' ', formatted_article_text)
-
 	sentence_list = nltk.sent_tokenize(article_text, language=language)
-	sentence_score = compute_tf(article_text)
+	sentence_score = compute_tf_idf(article_text,idf_flag=False)
 
 	summary_sentences = heapq.nlargest(round(len(sentence_list) * result_sent_perc / 100
 											 ), sentence_score, key=sentence_score.get)

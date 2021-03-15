@@ -85,8 +85,7 @@ def compute_lda(sentence_list, tokens):
 
 def predict_lda(text,result_sent_perc = 10):
     article_text = re.sub(r'\[[0-9]*\]', ' ', text)
-    #article_text = re.sub(r'\s+', ' ', article_text)
-    #print(article_text)
+    article_text = article_text.replace('\r\n', ' <br> ')
     # TODO: rename variables
     sentence_list = nltk.sent_tokenize(article_text, language=language)
     words_list = [nltk.word_tokenize(sent.lower(), language=language) for sent in sentence_list]
@@ -112,7 +111,9 @@ def predict_lda(text,result_sent_perc = 10):
                                              ), sentence_score, key=sentence_score.get)
 
     res = ' '
+
     for sent in sentence_list:
+    #for sent in sentence_list:
         if sent in summary_sentences:
             res += " <strong>" + sent + "</strong>"
         else:
