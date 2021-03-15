@@ -113,7 +113,6 @@ def predict_lda(text,result_sent_perc = 10):
     res = ' '
 
     for sent in sentence_list:
-    #for sent in sentence_list:
         if sent in summary_sentences:
             res += " <strong>" + sent + "</strong>"
         else:
