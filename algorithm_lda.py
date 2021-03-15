@@ -107,7 +107,7 @@ def predict_lda(text,result_sent_perc = 10):
         for token_sentence in tokens_sentences_lemmatized
     ]
     sentence_score = compute_lda(sentence_list, tokens_sentences_lemmatized)
-    summary_sentences = heapq.nlargest(round(len(sentence_list) * result_sent_perc / 100
+    summary_sentences = heapq.nlargest(round(len(sentence_score) * result_sent_perc / 100
                                              ), sentence_score, key=sentence_score.get)
 
     res = ' '
