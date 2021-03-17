@@ -64,7 +64,7 @@ def compute_tf_idf(article_text, idf_flag=True):
 	return  tf_idf_measure
 
 
-def predict_tfidf(text, result_sent_perc = 10):
+def predict_tfidf(text, result_sent_perc=10):
 	article_text = re.sub(r'\[[0-9]*\]', ' ', text)
 	article_text = article_text.replace('\r\n', ' <br> ')
 
@@ -74,7 +74,7 @@ def predict_tfidf(text, result_sent_perc = 10):
 	sentence_list = nltk.sent_tokenize(article_text, language=language)
 	sentence_score = compute_tf_idf(article_text)
 
-	summary_sentences = heapq.nlargest(round(len(sentence_list) * result_sent_perc / 100
+	summary_sentences = heapq.nlargest(math.floor(len(sentence_list) * result_sent_perc / 100
 											 ), sentence_score, key=sentence_score.get)
 	# res = ' '.join(summary_sentences)
 	res = ' '
@@ -87,14 +87,14 @@ def predict_tfidf(text, result_sent_perc = 10):
 	return res
 
 
-def predict_tf(text, result_sent_perc = 10):
+def predict_tf(text, result_sent_perc=10):
 	article_text = re.sub(r'\[[0-9]*\]', ' ', text)
 	article_text = article_text.replace('\r\n', ' <br> ')
 
 	sentence_list = nltk.sent_tokenize(article_text, language=language)
 	sentence_score = compute_tf_idf(article_text,idf_flag=False)
 
-	summary_sentences = heapq.nlargest(round(len(sentence_list) * result_sent_perc / 100
+	summary_sentences = heapq.nlargest(math.floor(len(sentence_list) * result_sent_perc / 100
 											 ), sentence_score, key=sentence_score.get)
 	res = ' '
 	for sent in sentence_list:

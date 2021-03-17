@@ -3,6 +3,7 @@ import nltk
 import gensim
 import heapq
 import numpy as np
+import math
 
 
 nltk.download('punkt')
@@ -10,7 +11,7 @@ nltk.download('averaged_perceptron_tagger')
 nltk.download('wordnet')
 nltk.download('stopwords')
 # TODO: change languages is not available
-language = "english"
+language = "russian"
 stopwords = nltk.corpus.stopwords.words(language)
 
 
@@ -35,7 +36,7 @@ def find_best_num_topic(dictionary, corpus, texts, limit=20, start=2, step=2):
 	texts : Список текста
 	limit : Максимальное количество тем
     """
-
+    limit = 20 if limit > 20 else limit
     best_coherence_values = 0
     best_num_topic = 2
 
@@ -60,7 +61,7 @@ def compute_lda(sentence_list, tokens):
     corpus = [dictionary_LDA.doc2bow(token) for token in tokens]
 
     np.random.seed(123456)
-    num_topics = find_best_num_topic(dictionary_LDA,corpus,tokens)
+    num_topics = find_best_num_topic(dictionary_LDA,corpus,tokens,limit=len(sentence_list))
     lda_model = gensim.models.LdaModel(
         corpus, num_topics=num_topics,
         id2word=dictionary_LDA,
@@ -80,10 +81,14 @@ def compute_lda(sentence_list, tokens):
                     else:
                         sentence_score[sent] += probability
 
+    for sent in sentence_list:
+        if sent not in sentence_score:
+            sentence_score[sent] = 0
+
     return sentence_score
 
 
-def predict_lda(text,result_sent_perc = 10):
+def predict_lda(text,result_sent_perc = 100):
     article_text = re.sub(r'\[[0-9]*\]', ' ', text)
     article_text = article_text.replace('\r\n', ' <br> ')
     # TODO: rename variables
@@ -107,7 +112,7 @@ def predict_lda(text,result_sent_perc = 10):
         for token_sentence in tokens_sentences_lemmatized
     ]
     sentence_score = compute_lda(sentence_list, tokens_sentences_lemmatized)
-    summary_sentences = heapq.nlargest(round(len(sentence_score) * result_sent_perc / 100
+    summary_sentences = heapq.nlargest(math.floor(len(sentence_list) * result_sent_perc / 100
                                              ), sentence_score, key=sentence_score.get)
 
     res = ' '
