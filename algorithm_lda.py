@@ -30,7 +30,7 @@ def get_wordnet_pos(treebank_tag):
 
 def find_best_num_topic(dictionary, corpus, texts, limit=20, start=2, step=2):
     """
-	Выбор оптимального количества тем с наибольшем скором когерентности
+    Выбор оптимального количества тем с наибольшем скором когерентности
 	dictionary : Gensim словарь
 	corpus : Gensim корпус
 	texts : Список текста
@@ -56,12 +56,13 @@ def compute_lda(sentence_list, tokens):
     tokens = list(trigram_model[bigram_model[tokens]])
 
     dictionary_LDA = gensim.corpora.Dictionary(tokens)
-    # TODO: need found optimal parameter no_below
+
     dictionary_LDA.filter_extremes(no_below=2)
     corpus = [dictionary_LDA.doc2bow(token) for token in tokens]
 
     np.random.seed(123456)
-    num_topics = find_best_num_topic(dictionary_LDA,corpus,tokens,limit=len(sentence_list))
+    # num_topics = find_best_num_topic(dictionary_LDA,corpus,tokens,limit=len(sentence_list))
+    num_topics = len(sentence_list) if len(sentence_list) <= 20 else 20
     lda_model = gensim.models.LdaModel(
         corpus, num_topics=num_topics,
         id2word=dictionary_LDA,
