@@ -16,7 +16,7 @@ def upload_text():
 		input_text = request.form['input_text']
 		if not input_text:
 			return render_template('index.html', output_text = "Не было введено текста!")
-		output_text = predict_lda(input_text)
+		output_text = predict_tfidf(input_text)
 		return render_template('index.html', output_text = output_text)
 	return render_template('index.html')
 
