@@ -3,3 +3,4 @@ numpy
 gunicorn==19.9.0
 nltk
 gensim
+networkx

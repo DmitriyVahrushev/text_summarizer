@@ -3,8 +3,10 @@ import os
 from flask import Flask, render_template, request, redirect, flash, jsonify
 from algorithm_lda import predict_lda
 from model_inference import predict_tf, predict_tfidf
+from algorithm_textrank import predict_textrank
 
 app = Flask(__name__)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_text():
@@ -16,7 +18,7 @@ def upload_text():
 		input_text = request.form['input_text']
 		if not input_text:
 			return render_template('index.html', output_text = "Не было введено текста!")
-		output_text = predict_lda(input_text)
+		output_text = predict_textrank(input_text)
 		return render_template('index.html', output_text = output_text)
 	return render_template('index.html')
 
@@ -55,7 +57,7 @@ def api_predict_with(model_name):
 	elif model_name =='tf':
 		output_text = predict_tf(input_text, sentence_count)
 	elif model_name =='textrank':
-		output_text = input_text
+		output_text = predict_textrank(input_text,sentence_count)
 	else:
 		output_text = 'No such model!!!'
 	recieved_json['output_text'] = output_text

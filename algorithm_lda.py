@@ -89,7 +89,7 @@ def compute_lda(sentence_list, tokens):
     return sentence_score
 
 
-def predict_lda(text,result_sent_perc = 100):
+def predict_lda(text,result_sent_perc = 10):
     article_text = re.sub(r'\[[0-9]*\]', ' ', text)
     article_text = article_text.replace('\r\n', ' <br> ')
     # TODO: rename variables
