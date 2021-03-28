@@ -16,7 +16,7 @@ def upload_text():
 		input_text = request.form['input_text']
 		if not input_text:
 			return render_template('index.html', output_text = "Не было введено текста!")
-		output_text = predict_tfidf(input_text)
+		output_text = predict_lda(input_text)
 		return render_template('index.html', output_text = output_text)
 	return render_template('index.html')
 
@@ -54,6 +54,8 @@ def api_predict_with(model_name):
 		output_text = predict_lda(input_text, sentence_count)
 	elif model_name =='tf':
 		output_text = predict_tf(input_text, sentence_count)
+	elif model_name =='textrank':
+		output_text = input_text
 	else:
 		output_text = 'No such model!!!'
 	recieved_json['output_text'] = output_text
